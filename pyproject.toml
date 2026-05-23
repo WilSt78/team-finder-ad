@@ -1,0 +1,33 @@
+[tool.ruff.lint]
+select = [
+    "E",   # ошибки стиля
+    "F",   # базовые ошибки
+    "I",   # сортировка импортов
+    "W",   # предупреждения стиля
+    "B",   # возможные баги (flake8-bugbear)
+    "UP",  # pyupgrade — обновляет код под новую версию Python
+]
+
+[tool.ruff.lint.per-file-ignores]
+"api/*.py" = ["B008"]
+
+ignore = [
+    
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.ruff]
+target-version = "py311"
+exclude = [
+    ".git",
+    "pycache",
+    "venv",
+    ".venv",
+    "build",
+    "dist"
+]

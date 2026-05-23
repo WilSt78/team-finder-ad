@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -11,7 +12,7 @@ DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = "users.User"
 
 
 # Application definition
@@ -24,7 +25,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "projects.apps.ProjectsConfig",
-    "users.apps.UsersConfig"
+    "users.apps.UsersConfig",
 ]
 
 MIDDLEWARE = [
@@ -42,7 +43,10 @@ ROOT_URLCONF = "team_finder.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / f"templates_var{config('TASK_VERSION', default='1')}"],
+        "DIRS": [
+            BASE_DIR
+            / f"templates_var{config('TASK_VERSION', default='1')}"
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

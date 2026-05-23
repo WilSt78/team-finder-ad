@@ -2,8 +2,9 @@ import re
 
 from django.core.exceptions import ValidationError
 
+
 def github_validator(url):
-    GITHUB_REGEX = r'^https?:\/\/(www\.)?github\.com\/[\w\-\.]+(\/[\w\-\.]+)?\/?$'
+    GITHUB_REGEX = r"^https?:\/\/(www\.)?github\.com\/[\w\-\.]+(\/[\w\-\.]+)?\/?$"
 
     if not url:
         return url
