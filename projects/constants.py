@@ -1,8 +1,10 @@
 MAX_LENGTH_NAME = 200
 MAX_LENGTH_STATUS = 6
 
-STATUS_CHOICES = [("open", "Open"), ("closed", "Closed")]
 STATUS_CLOSED = "closed"
 STATUS_OPEN = "open"
+
+
+STATUS_CHOICES = [(STATUS_OPEN, "Open"), (STATUS_CLOSED, "Closed")]
 
 NUMBER_OF_PAGINATOR_PAGES = 12

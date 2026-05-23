@@ -19,18 +19,9 @@ from .models import Skill, User
 
 def get_users(request):
     active_skill = request.GET.get("skill")
+    query_set = User.objects.prefetch_related("skills").order_by("id")
     if active_skill:
-        query_set = (
-            User.objects.prefetch_related("skills")
-            .filter(skills__name=active_skill)
-            .order_by("id")
-        )
-    else:
-        query_set = (
-            User.objects.prefetch_related("skills")
-            .all()
-            .order_by("id")
-        )
+        query_set = query_set.filter(skills__name=active_skill)
     paginator = get_paginator(request, query_set)
     all_skills = Skill.objects.all()
     context = {
@@ -49,13 +40,12 @@ def user_detail(request, user_id):
 
 def register(request):
     form = RegistrationForm(request.POST or None)
-    if request.method == "POST":
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.set_password(form.cleaned_data["password"])
-            user.save()
-            login(request, user)
-            return redirect("/projects/list/")
+    if form.is_valid():
+        user = form.save(commit=False)
+        user.set_password(form.cleaned_data["password"])
+        user.save()
+        login(request, user)
+        return redirect("projects:index")
     context = {"form": form}
     return render(request, "users/register.html", context)
 

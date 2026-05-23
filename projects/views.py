@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
 
 from team_finder.utils import get_paginator
 
@@ -13,7 +14,12 @@ from .models import Project
 
 
 def index(request):
-    query_set = Project.objects.all().order_by("-id")
+    query_set = (
+        Project.objects.select_related("owner")
+        .prefetch_related("participants")
+        .annotate(participants_count=Count("participants"))
+        .order_by("-id")
+    )
     paginator = get_paginator(request, query_set)
     context = {"page_obj": paginator}
     return render(request, "projects/project_list.html", context)
@@ -31,6 +37,7 @@ def project_detail(request, project_id):
 
 
 @login_required
+@require_POST
 def toggle_completion(request, project_id):
     project = get_object_or_404(Project, id=project_id)
     if (
@@ -44,20 +51,17 @@ def toggle_completion(request, project_id):
             {"status": "ok", "project_status": "closed"}
         )
     return JsonResponse(
-        {"status": "Wrong method or project already closed"},
+        {"status": "Проект уже закрыт"},
         status=HTTPStatus.BAD_REQUEST,
     )
 
 
 @login_required
+@require_POST
 def toggle_participation(request, project_id):
-    if request.method != "POST":
-        return JsonResponse(
-            {"status": "Wrong method"}, status=HTTPStatus.BAD_REQUEST
-        )
     project = get_object_or_404(Project, id=project_id)
     user = request.user
-    if user in project.participants:
+    if project.participants.filter(id=user.id).exists():
         project.participants.remove(user)
     else:
         project.participants.add(user)
@@ -67,16 +71,15 @@ def toggle_participation(request, project_id):
 @login_required
 def create_project(request):
     form = ProjectForm(request.POST or None)
-    if request.method == "POST":
-        if form.is_valid():
-            project = form.save(commit=False)
-            user = request.user
-            project.owner = user
-            project.save()
-            project.participants.add(user)
-            return redirect(
-                "projects:project_detail", project_id=project.id
-            )
+    if form.is_valid():
+        project = form.save(commit=False)
+        user = request.user
+        project.owner = user
+        project.save()
+        project.participants.add(user)
+        return redirect(
+            "projects:project_detail", project_id=project.id
+        )
 
     context = {"form": form, "is_edit": False}
 
@@ -91,11 +94,10 @@ def edit_project(request, project_id):
             "projects:project_detail", project_id=project_id
         )
     form = ProjectForm(request.POST or None, instance=project)
-    if request.method == "POST":
-        if form.is_valid():
-            form.save()
-            return redirect(
-                "projects:project_detail", project_id=project_id
-            )
+    if form.is_valid():
+        form.save()
+        return redirect(
+            "projects:project_detail", project_id=project_id
+        )
     context = {"form": form, "is_edit": True}
     return render(request, "projects/create-project.html", context)

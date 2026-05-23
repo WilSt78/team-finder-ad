@@ -2,6 +2,7 @@
 import re
 
 from django.core.exceptions import ValidationError
+from django.apps import apps
 
 
 def normalize_phone(phone):
@@ -30,11 +31,10 @@ def validate_phone_format(value):
 
 
 def validate_unique_phone(value, instance=None):
-    from .models import User
-
     if not value:
         return value
     normalized = normalize_phone(value)
+    User = apps.get_model("users", "User")
     queryset = User.objects.filter(phone=normalized)
     if instance and instance.pk:
         queryset = queryset.exclude(pk=instance.pk)

@@ -1,6 +1,6 @@
 from django import forms
 
-from .constants import *
+from .constants import STATUS_CHOICES
 from .models import Project
 
 
