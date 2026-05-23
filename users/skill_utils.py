@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.db.models import Q
 
 from .constants import SKILL_QUERY_SIZE
 from .models import Skill
