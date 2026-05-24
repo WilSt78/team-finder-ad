@@ -45,7 +45,7 @@ def register(request):
         user.set_password(form.cleaned_data["password"])
         user.save()
         login(request, user)
-        return redirect("projects:index")
+        return redirect("projects:project_list")
     context = {"form": form}
     return render(request, "users/register.html", context)
 

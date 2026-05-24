@@ -72,21 +72,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     def save(self, *args, **kwargs):
-        is_new = not self.pk
-
-        if is_new and not self.avatar:
-            super().save(*args, **kwargs)
-            img = generate_avatar(self)
-            super().save(update_fields=["avatar"])
-        else:
-            super().save(*args, **kwargs)
-
-    def __str__(self):
-        return self.name
+        super().save(*args, **kwargs)
+        generate_avatar(self)
+        super().save(update_fields=["avatar"])
 
     class Meta:
         verbose_name = "пользователь"
         verbose_name_plural = "пользователи"
+
+    def __str__(self):
+        return self.name
 
 
 class UserSkills(models.Model):
@@ -103,3 +98,6 @@ class UserSkills(models.Model):
     class Meta:
         verbose_name = "навык пользователя"
         verbose_name_plural = "навыки пользователей"
+
+    def __str__(self):
+        return f"{self.user.name} - {self.skill.name}"

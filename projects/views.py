@@ -8,7 +8,7 @@ from django.views.decorators.http import require_POST
 
 from team_finder.utils import get_paginator
 
-from .constants import *
+from .constants import STATUS_CLOSED, STATUS_OPEN
 from .forms import ProjectForm
 from .models import Project
 
@@ -42,7 +42,6 @@ def toggle_completion(request, project_id):
     project = get_object_or_404(Project, id=project_id)
     if (
         project.owner == request.user
-        and request.method == "POST"
         and project.status == STATUS_OPEN
     ):
         project.status = STATUS_CLOSED

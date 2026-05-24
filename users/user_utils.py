@@ -3,7 +3,6 @@ import random
 from io import BytesIO
 
 from django.core.files.base import ContentFile
-from django.db.models import Q
 from PIL import Image, ImageDraw, ImageFont
 
 from .constants import (
@@ -27,7 +26,10 @@ def generate_avatar(user):
 
     image = Image.new("RGB", (size, size), color=bg_color)
     draw = ImageDraw.Draw(image)
-    font = ImageFont.truetype(AVATAR_FONT_NAME, AVATAR_FONT_SIZE)
+    try:
+        font = ImageFont.truetype(AVATAR_FONT_NAME, AVATAR_FONT_SIZE)
+    except:
+        font = ImageFont.load_default(size=AVATAR_FONT_SIZE)
 
     bbox = draw.textbbox((X_ANCHOR, Y_ANCHOR), letter, font=font)
     text_width = bbox[2] - bbox[0]

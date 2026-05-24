@@ -45,12 +45,12 @@ class Project(models.Model):
         verbose_name="участники",
     )
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         verbose_name = "проект"
         verbose_name_plural = "проекты"
+
+    def __str__(self):
+        return self.name
 
 
 class Participants(models.Model):
@@ -66,9 +66,9 @@ class Participants(models.Model):
         related_name="participant_entries",
     )
 
-    def __str__(self):
-        return f"{self.user.name} - {self.project.name}"
-
     class Meta:
         verbose_name = "участник"
         verbose_name_plural = "участники"
+
+    def __str__(self):
+        return f"{self.user.name} - {self.project.name}"
