@@ -83,5 +83,6 @@ python manage.py runserver
 
 ## Автор проекта:
 https://github.com/WilSt78/team-finder-ad
-Сделано под руководством Яндекс Практикума:
+
+## Сделано под руководством Яндекс Практикума:
 https://practicum.yandex.ru/
